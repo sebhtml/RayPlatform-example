@@ -1,0 +1,14 @@
+
+== To test this example ==
+
+mkdir test
+cd test
+
+git clone git://github.com/sebhtml/ray.git
+ln -s ray/RayPlatform RayPlatform
+
+make
+
+mpiexec -n 8 ./program
+
+
