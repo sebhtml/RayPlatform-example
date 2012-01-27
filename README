@@ -1,4 +1,14 @@
 
+This is an example program that utilises the Ray Platform.
+
+
+The RayPlatform main class is called ComputeCore.
+
+Plugins can be registered with the core.
+
+In this example, there is only one plugin called Test.
+
+
 == To test this example ==
 
 RayPlatform must contain RayPlatform stuff shipped with ray.
