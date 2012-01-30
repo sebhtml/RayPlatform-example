@@ -56,4 +56,19 @@ public:
 	void call();
 };
 
+class Adapter_MY_TEST_MPI_TAG_STOP_AND_DIE: public MessageTagHandler{
+	Test*m_object;
+public:
+	void setObject(Test*object);
+	void call(Message*m);
+};
+
+class Adapter_MY_TEST_MPI_TAG_TIME_BOMB: public MessageTagHandler{
+	Test*m_object;
+public:
+	void setObject(Test*object);
+	void call(Message*m);
+};
+
+
 #endif

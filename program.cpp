@@ -34,6 +34,9 @@ int main(int argc,char**argv){
  */
 	core.run();
 
+// write plugin information
+	core.printPlugins(".");
+
 /**
  * When the core returns
  * we destroy it safely 

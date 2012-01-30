@@ -23,6 +23,7 @@ class Test:  public CorePlugin{
 	SlaveMode MY_TEST_SLAVE_MODE_STEP_A;
 	SlaveMode MY_TEST_SLAVE_MODE_STEP_B;
 	SlaveMode MY_TEST_SLAVE_MODE_STEP_C;
+	SlaveMode RAY_SLAVE_MODE_DO_NOTHING;
 
 /** adapters for master modes **/
 	Adapter_MY_TEST_MASTER_MODE_STEP_A m_adapter_MY_TEST_MASTER_MODE_STEP_A;
@@ -34,9 +35,15 @@ class Test:  public CorePlugin{
 	Adapter_MY_TEST_SLAVE_MODE_STEP_B m_adapter_MY_TEST_SLAVE_MODE_STEP_B;
 	Adapter_MY_TEST_SLAVE_MODE_STEP_C m_adapter_MY_TEST_SLAVE_MODE_STEP_C;
 
+	Adapter_MY_TEST_MPI_TAG_TIME_BOMB m_adapter_MY_TEST_MPI_TAG_TIME_BOMB;
+	Adapter_MY_TEST_MPI_TAG_STOP_AND_DIE m_adapter_MY_TEST_MPI_TAG_STOP_AND_DIE;
+
 	MessageTag MY_TEST_MPI_TAG_START_STEP_A;
 	MessageTag MY_TEST_MPI_TAG_START_STEP_B;
 	MessageTag MY_TEST_MPI_TAG_START_STEP_C;
+	
+	MessageTag MY_TEST_MPI_TAG_TIME_BOMB;
+	MessageTag MY_TEST_MPI_TAG_STOP_AND_DIE;
 
 	ComputeCore*m_core;
 
@@ -57,6 +64,9 @@ public:
 	void call_MY_TEST_SLAVE_MODE_STEP_A();
 	void call_MY_TEST_SLAVE_MODE_STEP_B();
 	void call_MY_TEST_SLAVE_MODE_STEP_C();
+
+	void call_MY_TEST_MPI_TAG_TIME_BOMB(Message*message);
+	void call_MY_TEST_MPI_TAG_STOP_AND_DIE(Message*message);
 
 /** the following two methods are required by the interface CorePlugin **/
 

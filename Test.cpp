@@ -58,8 +58,59 @@ void Test::call_MY_TEST_SLAVE_MODE_STEP_C(){
 
 	cout<<"I am "<<m_core->getMessagesHandler()->getRank()<<" doing call_MY_TEST_SLAVE_MODE_STEP_C, now I die"<<endl;
 
-	m_core->stop(); // stop the main loop
 	cout<<"This is over "<<endl;
+
+	if(m_core->getMessagesHandler()->getRank()==0){
+		uint64_t*buffer=(uint64_t*)m_core->getOutboxAllocator()->allocate(1*sizeof(uint64_t));
+		buffer[0]=100;
+
+		// compute the next destination
+		Rank destination=m_core->getMessagesHandler()->getRank()+1;
+		if(destination==m_core->getMessagesHandler()->getSize())
+			destination=0;
+
+		Message aMessage(buffer,1,destination,MY_TEST_MPI_TAG_TIME_BOMB,m_core->getMessagesHandler()->getRank());
+
+		// send the bomb to another rank
+		m_core->getOutbox()->push_back(aMessage);
+	}
+
+	// do nothing now
+	m_core->getSwitchMan()->setSlaveMode(RAY_SLAVE_MODE_DO_NOTHING);
+}
+
+void Test::call_MY_TEST_MPI_TAG_TIME_BOMB(Message*message){
+	uint64_t*buffer=message->getBuffer();
+
+	if(buffer[0]==0){
+		cout<<"The bomb exploded on rank "<<m_core->getMessagesHandler()->getRank()<<" !"<<endl;
+
+		// kill everyone
+
+		m_core->sendEmptyMessageToAll(MY_TEST_MPI_TAG_STOP_AND_DIE);
+	}else{
+		uint64_t*bufferOut=(uint64_t*)m_core->getOutboxAllocator()->allocate(1*sizeof(uint64_t));
+		bufferOut[0]=buffer[0]-1;
+
+		cout<<"Remaining time before the explosion is "<<bufferOut[0]<<" according to rank "<<m_core->getMessagesHandler()->getRank()<<endl;
+
+		// compute the next destination
+		Rank destination=m_core->getMessagesHandler()->getRank()+1;
+		if(destination==m_core->getMessagesHandler()->getSize())
+			destination=0;
+
+		Message aMessage(bufferOut,1,destination,MY_TEST_MPI_TAG_TIME_BOMB,m_core->getMessagesHandler()->getRank());
+
+		// send the bomb to another rank
+		m_core->getOutbox()->push_back(aMessage);
+	}
+}
+
+void Test::call_MY_TEST_MPI_TAG_STOP_AND_DIE(Message*message){
+
+	cout<<"rank "<<m_core->getMessagesHandler()->getRank()<<" received message MY_TEST_MPI_TAG_STOP_AND_DIE, this kills the batman"<<endl;
+
+	m_core->stop();
 }
 
 void Test::registerPlugin(ComputeCore*core){
@@ -121,11 +172,12 @@ void Test::registerPlugin(ComputeCore*core){
 	core->setMasterModeNextMasterMode(m_plugin,MY_TEST_MASTER_MODE_STEP_A,MY_TEST_MASTER_MODE_STEP_B);
 	core->setMasterModeNextMasterMode(m_plugin,MY_TEST_MASTER_MODE_STEP_B,MY_TEST_MASTER_MODE_STEP_C);
 
-	
+	// configure which control message to send given a master mode
 	core->setMasterModeToMessageTagSwitch(m_plugin,MY_TEST_MASTER_MODE_STEP_A,MY_TEST_MPI_TAG_START_STEP_A);
 	core->setMasterModeToMessageTagSwitch(m_plugin,MY_TEST_MASTER_MODE_STEP_B,MY_TEST_MPI_TAG_START_STEP_B);
 	core->setMasterModeToMessageTagSwitch(m_plugin,MY_TEST_MASTER_MODE_STEP_C,MY_TEST_MPI_TAG_START_STEP_C);
 
+	// configure which slave mode to set given a message tag
 	core->setMessageTagToSlaveModeSwitch(m_plugin,MY_TEST_MPI_TAG_START_STEP_A,MY_TEST_SLAVE_MODE_STEP_A);
 	core->setMessageTagToSlaveModeSwitch(m_plugin,MY_TEST_MPI_TAG_START_STEP_B,MY_TEST_SLAVE_MODE_STEP_B);
 	core->setMessageTagToSlaveModeSwitch(m_plugin,MY_TEST_MPI_TAG_START_STEP_C,MY_TEST_SLAVE_MODE_STEP_C);
@@ -134,6 +186,17 @@ void Test::registerPlugin(ComputeCore*core){
 	core->setFirstMasterMode(m_plugin,MY_TEST_MASTER_MODE_STEP_A);
 
 	m_core=core;
+
+	// configure the two message tags
+
+	MY_TEST_MPI_TAG_TIME_BOMB=core->allocateMessageTagHandle(m_plugin,MY_TEST_MPI_TAG_TIME_BOMB);
+	m_adapter_MY_TEST_MPI_TAG_TIME_BOMB.setObject(this);
+	core->setMessageTagObjectHandler(m_plugin,MY_TEST_MPI_TAG_TIME_BOMB,&m_adapter_MY_TEST_MPI_TAG_TIME_BOMB);
+
+	MY_TEST_MPI_TAG_STOP_AND_DIE=core->allocateMessageTagHandle(m_plugin,MY_TEST_MPI_TAG_STOP_AND_DIE);
+	m_adapter_MY_TEST_MPI_TAG_STOP_AND_DIE.setObject(this);
+	core->setMessageTagObjectHandler(m_plugin,MY_TEST_MPI_TAG_STOP_AND_DIE,&m_adapter_MY_TEST_MPI_TAG_STOP_AND_DIE);
+
 }
 
 void Test::resolveSymbols(ComputeCore*core){
@@ -145,6 +208,9 @@ void Test::resolveSymbols(ComputeCore*core){
 	// we only have one m_plugin
 	
 	MY_TEST_SLAVE_MODE_STEP_A=core->getSlaveModeFromSymbol(m_plugin,"MY_TEST_SLAVE_MODE_STEP_A");
+
+	// this slave mode is registered somewhere in RayPlatform
+	RAY_SLAVE_MODE_DO_NOTHING=core->getSlaveModeFromSymbol(m_plugin,"RAY_SLAVE_MODE_DO_NOTHING");
 }
 
 
