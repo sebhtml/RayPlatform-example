@@ -6,52 +6,52 @@
 #include "Test_adapters.h"
 #include "Test.h"
 
-void Adapter_RAY_MASTER_MODE_STEP_A::setObject(Test*object){
+void Adapter_MY_TEST_MASTER_MODE_STEP_A::setObject(Test*object){
 	m_object=object;
 }
 
-void Adapter_RAY_MASTER_MODE_STEP_A::call(){
-	m_object->call_RAY_MASTER_MODE_STEP_A();
+void Adapter_MY_TEST_MASTER_MODE_STEP_A::call(){
+	m_object->call_MY_TEST_MASTER_MODE_STEP_A();
 }
 
-void Adapter_RAY_MASTER_MODE_STEP_B::setObject(Test*object){
+void Adapter_MY_TEST_MASTER_MODE_STEP_B::setObject(Test*object){
 	m_object=object;
 }
 
-void Adapter_RAY_MASTER_MODE_STEP_B::call(){
-	m_object->call_RAY_MASTER_MODE_STEP_B();
+void Adapter_MY_TEST_MASTER_MODE_STEP_B::call(){
+	m_object->call_MY_TEST_MASTER_MODE_STEP_B();
 }
 
-void Adapter_RAY_MASTER_MODE_STEP_C::setObject(Test*object){
+void Adapter_MY_TEST_MASTER_MODE_STEP_C::setObject(Test*object){
 	m_object=object;
 }
 
-void Adapter_RAY_MASTER_MODE_STEP_C::call(){
-	m_object->call_RAY_MASTER_MODE_STEP_C();
+void Adapter_MY_TEST_MASTER_MODE_STEP_C::call(){
+	m_object->call_MY_TEST_MASTER_MODE_STEP_C();
 }
 
-void Adapter_RAY_SLAVE_MODE_STEP_A::setObject(Test*object){
+void Adapter_MY_TEST_SLAVE_MODE_STEP_A::setObject(Test*object){
 	m_object=object;
 }
 
-void Adapter_RAY_SLAVE_MODE_STEP_A::call(){
-	m_object->call_RAY_SLAVE_MODE_STEP_A();
+void Adapter_MY_TEST_SLAVE_MODE_STEP_A::call(){
+	m_object->call_MY_TEST_SLAVE_MODE_STEP_A();
 }
 
-void Adapter_RAY_SLAVE_MODE_STEP_B::setObject(Test*object){
+void Adapter_MY_TEST_SLAVE_MODE_STEP_B::setObject(Test*object){
 	m_object=object;
 }
 
-void Adapter_RAY_SLAVE_MODE_STEP_B::call(){
-	m_object->call_RAY_SLAVE_MODE_STEP_B();
+void Adapter_MY_TEST_SLAVE_MODE_STEP_B::call(){
+	m_object->call_MY_TEST_SLAVE_MODE_STEP_B();
 }
 
-void Adapter_RAY_SLAVE_MODE_STEP_C::setObject(Test*object){
+void Adapter_MY_TEST_SLAVE_MODE_STEP_C::setObject(Test*object){
 	m_object=object;
 }
 
-void Adapter_RAY_SLAVE_MODE_STEP_C::call(){
-	m_object->call_RAY_SLAVE_MODE_STEP_C();
+void Adapter_MY_TEST_SLAVE_MODE_STEP_C::call(){
+	m_object->call_MY_TEST_SLAVE_MODE_STEP_C();
 }
 
 
