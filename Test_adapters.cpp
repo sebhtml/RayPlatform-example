@@ -54,11 +54,4 @@ void Adapter_RAY_SLAVE_MODE_STEP_C::call(){
 	m_object->call_RAY_SLAVE_MODE_STEP_C();
 }
 
-void Adapter_RAY_MPI_TAG_SWITCHMAN_COMPLETION_SIGNAL::setObject(Test*object){
-	m_object=object;
-}
-
-void Adapter_RAY_MPI_TAG_SWITCHMAN_COMPLETION_SIGNAL::call(Message*message){
-	m_object->call_RAY_MPI_TAG_SWITCHMAN_COMPLETION_SIGNAL(message);
-}
 

@@ -9,47 +9,6 @@ Test::Test(){
 	m_doneC=false;
 }
 
-void Test::registerPlugin(ComputeCore*core){
-
-	/** register the plugin with the core **/
-
-	PluginHandle plugin=core->allocatePluginHandle();
-	core->beginPluginRegistration(plugin);
-	core->setPluginName(plugin,"Test");
-
-	m_adapter_RAY_MASTER_MODE_STEP_A.setObject(this);
-	core->allocateMasterModeHandle(plugin,RAY_MASTER_MODE_STEP_A);
-	core->setMasterModeObjectHandler(plugin,RAY_MASTER_MODE_STEP_A,&m_adapter_RAY_MASTER_MODE_STEP_A);
-
-	m_adapter_RAY_MASTER_MODE_STEP_B.setObject(this);
-	core->allocateMasterModeHandle(plugin,RAY_MASTER_MODE_STEP_B);
-	core->setMasterModeObjectHandler(plugin,RAY_MASTER_MODE_STEP_B,&m_adapter_RAY_MASTER_MODE_STEP_B);
-
-	m_adapter_RAY_MASTER_MODE_STEP_C.setObject(this);
-	core->allocateMasterModeHandle(plugin,RAY_MASTER_MODE_STEP_C);
-	core->setMasterModeObjectHandler(plugin,RAY_MASTER_MODE_STEP_C,&m_adapter_RAY_MASTER_MODE_STEP_C);
-
-	m_adapter_RAY_SLAVE_MODE_STEP_A.setObject(this);
-	core->allocateSlaveModeHandle(plugin,RAY_SLAVE_MODE_STEP_A);
-	core->setSlaveModeObjectHandler(plugin,RAY_SLAVE_MODE_STEP_A,&m_adapter_RAY_SLAVE_MODE_STEP_A);
-
-	m_adapter_RAY_SLAVE_MODE_STEP_B.setObject(this);
-	core->allocateSlaveModeHandle(plugin,RAY_SLAVE_MODE_STEP_B);
-	core->setSlaveModeObjectHandler(plugin,RAY_SLAVE_MODE_STEP_B,&m_adapter_RAY_SLAVE_MODE_STEP_B);
-
-	m_adapter_RAY_SLAVE_MODE_STEP_C.setObject(this);
-	core->allocateSlaveModeHandle(plugin,RAY_SLAVE_MODE_STEP_C);
-	core->setSlaveModeObjectHandler(plugin,RAY_SLAVE_MODE_STEP_C,&m_adapter_RAY_SLAVE_MODE_STEP_C);
-
-	m_adapter_RAY_MPI_TAG_SWITCHMAN_COMPLETION_SIGNAL.setObject(this);
-	core->allocateMessageTagHandle(plugin,RAY_MPI_TAG_SWITCHMAN_COMPLETION_SIGNAL);
-	core->setMessageTagObjectHandler(plugin,RAY_MPI_TAG_SWITCHMAN_COMPLETION_SIGNAL,&m_adapter_RAY_MPI_TAG_SWITCHMAN_COMPLETION_SIGNAL);
-
-	core->endPluginRegistration(plugin);
-
-	m_core=core;
-}
-
 void Test::call_RAY_MASTER_MODE_STEP_A(){
 	if(m_doneA==false){
 		m_doneA=true;
@@ -78,6 +37,8 @@ void Test::call_RAY_MASTER_MODE_STEP_C(){
 		m_core->getSwitchMan()->openMasterMode(m_core->getOutbox(),m_core->getMessagesHandler()->getRank());
 	}else if(m_core->getSwitchMan()->allRanksAreReady()){
 		m_core->getSwitchMan()->closeMasterMode();
+
+		
 	}
 }
 
@@ -101,8 +62,89 @@ void Test::call_RAY_SLAVE_MODE_STEP_C(){
 	cout<<"This is over "<<endl;
 }
 
-void Test::call_RAY_MPI_TAG_SWITCHMAN_COMPLETION_SIGNAL(Message*message){
-	cout<<message->getSource()<<" completed something."<<endl;
-	m_core->getSwitchMan()->closeSlaveMode(message->getSource());
+void Test::registerPlugin(ComputeCore*core){
+
+	cout<<"Registering plugin"<<endl;
+
+	/** register the m_plugin with the core **/
+
+	m_plugin=core->allocatePluginHandle();
+
+	core->setPluginName(m_plugin,"Test");
+
+	// for each master mode, we allocate a handle 
+	// after that, we register a handler for it
+	//
+	// allocateMasterModeHandle takes 2 arguments
+	//  - the plugin handle
+	//  - the desired value for the requested master mode handle
+
+	RAY_MASTER_MODE_STEP_A=core->allocateMasterModeHandle(m_plugin,RAY_MASTER_MODE_STEP_A);
+	m_adapter_RAY_MASTER_MODE_STEP_A.setObject(this);
+	core->setMasterModeObjectHandler(m_plugin,RAY_MASTER_MODE_STEP_A,&m_adapter_RAY_MASTER_MODE_STEP_A);
+	core->setMasterModeSymbol(m_plugin,RAY_MASTER_MODE_STEP_A,"RAY_MASTER_MODE_STEP_A");
+
+	RAY_MASTER_MODE_STEP_B=core->allocateMasterModeHandle(m_plugin,RAY_MASTER_MODE_STEP_B);
+	m_adapter_RAY_MASTER_MODE_STEP_B.setObject(this);
+	core->setMasterModeObjectHandler(m_plugin,RAY_MASTER_MODE_STEP_B,&m_adapter_RAY_MASTER_MODE_STEP_B);
+	core->setMasterModeSymbol(m_plugin,RAY_MASTER_MODE_STEP_B,"RAY_MASTER_MODE_STEP_B");
+
+	RAY_MASTER_MODE_STEP_C=core->allocateMasterModeHandle(m_plugin,RAY_MASTER_MODE_STEP_C);
+	m_adapter_RAY_MASTER_MODE_STEP_C.setObject(this);
+	core->setMasterModeObjectHandler(m_plugin,RAY_MASTER_MODE_STEP_C,&m_adapter_RAY_MASTER_MODE_STEP_C);
+	core->setMasterModeSymbol(m_plugin,RAY_MASTER_MODE_STEP_C,"RAY_MASTER_MODE_STEP_C");
+
+	// for each slave mode, we allocate a handle 
+	// after that, we register a handler for it
+
+	RAY_SLAVE_MODE_STEP_A=core->allocateSlaveModeHandle(m_plugin,RAY_SLAVE_MODE_STEP_A);
+	m_adapter_RAY_SLAVE_MODE_STEP_A.setObject(this);
+	core->setSlaveModeObjectHandler(m_plugin,RAY_SLAVE_MODE_STEP_A,&m_adapter_RAY_SLAVE_MODE_STEP_A);
+	core->setSlaveModeSymbol(m_plugin,RAY_SLAVE_MODE_STEP_A,"RAY_SLAVE_MODE_STEP_A");
+
+	RAY_SLAVE_MODE_STEP_B=core->allocateSlaveModeHandle(m_plugin,RAY_SLAVE_MODE_STEP_B);
+	m_adapter_RAY_SLAVE_MODE_STEP_B.setObject(this);
+	core->setSlaveModeObjectHandler(m_plugin,RAY_SLAVE_MODE_STEP_B,&m_adapter_RAY_SLAVE_MODE_STEP_B);
+	core->setSlaveModeSymbol(m_plugin,RAY_SLAVE_MODE_STEP_B,"RAY_SLAVE_MODE_STEP_B");
+
+	RAY_SLAVE_MODE_STEP_C=core->allocateSlaveModeHandle(m_plugin,RAY_SLAVE_MODE_STEP_C);
+	m_adapter_RAY_SLAVE_MODE_STEP_C.setObject(this);
+	core->setSlaveModeObjectHandler(m_plugin,RAY_SLAVE_MODE_STEP_C,&m_adapter_RAY_SLAVE_MODE_STEP_C);
+	core->setSlaveModeSymbol(m_plugin,RAY_SLAVE_MODE_STEP_C,"RAY_SLAVE_MODE_STEP_C");
+
+	RAY_MPI_TAG_START_STEP_A=core->allocateMessageTagHandle(m_plugin,RAY_MPI_TAG_START_STEP_A);
+	RAY_MPI_TAG_START_STEP_B=core->allocateMessageTagHandle(m_plugin,RAY_MPI_TAG_START_STEP_B);
+	RAY_MPI_TAG_START_STEP_C=core->allocateMessageTagHandle(m_plugin,RAY_MPI_TAG_START_STEP_C);
+
+	// now, we register the order of the master modes
+	
+	core->setMasterModeNextMasterMode(m_plugin,RAY_MASTER_MODE_STEP_A,RAY_MASTER_MODE_STEP_B);
+	core->setMasterModeNextMasterMode(m_plugin,RAY_MASTER_MODE_STEP_B,RAY_MASTER_MODE_STEP_C);
+
+	
+	core->setMasterModeToMessageTagSwitch(m_plugin,RAY_MASTER_MODE_STEP_A,RAY_MPI_TAG_START_STEP_A);
+	core->setMasterModeToMessageTagSwitch(m_plugin,RAY_MASTER_MODE_STEP_B,RAY_MPI_TAG_START_STEP_B);
+	core->setMasterModeToMessageTagSwitch(m_plugin,RAY_MASTER_MODE_STEP_C,RAY_MPI_TAG_START_STEP_C);
+
+	core->setMessageTagToSlaveModeSwitch(m_plugin,RAY_MPI_TAG_START_STEP_A,RAY_SLAVE_MODE_STEP_A);
+	core->setMessageTagToSlaveModeSwitch(m_plugin,RAY_MPI_TAG_START_STEP_B,RAY_SLAVE_MODE_STEP_B);
+	core->setMessageTagToSlaveModeSwitch(m_plugin,RAY_MPI_TAG_START_STEP_C,RAY_SLAVE_MODE_STEP_C);
+
+	// finally, we define an entry point
+	core->setFirstMasterMode(m_plugin,RAY_MASTER_MODE_STEP_A);
+
+	m_core=core;
 }
+
+void Test::resolveSymbols(ComputeCore*core){
+
+	cout<<"Resolving symbols"<<endl;
+	// here, we resolve symbols owned by other m_plugins
+	// but needed by the current m_plugin
+	// obviously, this is not needed here because
+	// we only have one m_plugin
+	
+	RAY_SLAVE_MODE_STEP_A=core->getSlaveModeFromSymbol(m_plugin,"RAY_SLAVE_MODE_STEP_A");
+}
+
 
