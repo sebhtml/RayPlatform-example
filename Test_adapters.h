@@ -14,61 +14,15 @@
 
 class Test;
 
-class Adapter_MY_TEST_MASTER_MODE_STEP_A: public MasterModeHandler{
-	Test*m_object;
-public:
-	void setObject(Test*object);
-	void call();
-};
+____CreateMasterModeAdapterDeclaration(Test,MY_TEST_MASTER_MODE_STEP_A);
+____CreateMasterModeAdapterDeclaration(Test,MY_TEST_MASTER_MODE_STEP_B);
+____CreateMasterModeAdapterDeclaration(Test,MY_TEST_MASTER_MODE_STEP_C);
 
-class Adapter_MY_TEST_MASTER_MODE_STEP_B: public MasterModeHandler{
-	Test*m_object;
-public:
-	void setObject(Test*object);
-	void call();
-};
+____CreateSlaveModeAdapterDeclaration(Test,MY_TEST_SLAVE_MODE_STEP_A);
+____CreateSlaveModeAdapterDeclaration(Test,MY_TEST_SLAVE_MODE_STEP_B);
+____CreateSlaveModeAdapterDeclaration(Test,MY_TEST_SLAVE_MODE_STEP_C);
 
-class Adapter_MY_TEST_MASTER_MODE_STEP_C: public MasterModeHandler{
-	Test*m_object;
-public:
-	void setObject(Test*object);
-	void call();
-};
-
-class Adapter_MY_TEST_SLAVE_MODE_STEP_A: public SlaveModeHandler{
-	Test*m_object;
-public:
-	void setObject(Test*object);
-	void call();
-};
-
-class Adapter_MY_TEST_SLAVE_MODE_STEP_B: public SlaveModeHandler{
-	Test*m_object;
-public:
-	void setObject(Test*object);
-	void call();
-};
-
-class Adapter_MY_TEST_SLAVE_MODE_STEP_C: public SlaveModeHandler{
-	Test*m_object;
-public:
-	void setObject(Test*object);
-	void call();
-};
-
-class Adapter_MY_TEST_MPI_TAG_STOP_AND_DIE: public MessageTagHandler{
-	Test*m_object;
-public:
-	void setObject(Test*object);
-	void call(Message*m);
-};
-
-class Adapter_MY_TEST_MPI_TAG_TIME_BOMB: public MessageTagHandler{
-	Test*m_object;
-public:
-	void setObject(Test*object);
-	void call(Message*m);
-};
-
+____CreateMessageTagAdapterDeclaration(Test,MY_TEST_MPI_TAG_STOP_AND_DIE);
+____CreateMessageTagAdapterDeclaration(Test,MY_TEST_MPI_TAG_TIME_BOMB);
 
 #endif
