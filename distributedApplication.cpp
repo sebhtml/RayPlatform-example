@@ -1,30 +1,25 @@
 /** this example is in the public domain **/
+/** RayPlatform is LGPLv3 **/
 /** author: Sébastien Boisvert **/
 
 #include <core/ComputeCore.h>
-#include "Test.h"
+#include "TestPlugin.h"
 using namespace std;
 
 int main(int argc,char**argv){
 
-/** build the ComputeCore
- * the ComputeCore is the kernel of 
- * a RayPlatform-based parallel application
- *
- * it manages a lot of stuff for the programmer.
+/** The ComputeCore is the kernel of 
+ * a RayPlatform-based parallel application.
+ * It manages a lot of stuff for the programmer.
  * **/
 	ComputeCore core;
 	core.constructor(&argc,&argv);
 
 /**
- * the only thing you can do to alter your application
- * is to register plugins
- *
- * RayPlatform plugins are similar
- * to Linux modules.
+ * The only thing you can do to alter your application
+ * is to register plugins.
  **/
-	Test testPlugin;
-
+	TestPlugin testPlugin;
 	core.registerPlugin(&testPlugin);
 
 	// more plugins can be registered !
@@ -35,7 +30,7 @@ int main(int argc,char**argv){
 	core.run();
 
 // write plugin information
-	core.printPlugins(".");
+	//core.printPlugins(".");
 
 /**
  * When the core returns

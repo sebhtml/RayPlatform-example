@@ -4,17 +4,16 @@ J=1
 
 all:
 	# compile the application
-	$(MPICXX) program.cpp -c -o program.o -I . -I RayPlatform -g
-	$(MPICXX) Test.cpp -c -o Test.o -I . -I RayPlatform -g
-	$(MPICXX) Test_adapters.cpp -c -o Test_adapters.o -I . -I RayPlatform -g
+	$(MPICXX) distributedApplication.cpp -c -o distributedApplication.o -I . -I RayPlatform -g
+	$(MPICXX) TestPlugin.cpp -c -o TestPlugin.o -I . -I RayPlatform -g
 
 	# compile the platform
 	cd RayPlatform; make -j $(J) CXXFLAGS=" -g "
 	
 	# link them
-	$(MPICXX) program.o Test.o Test_adapters.o RayPlatform/libRayPlatform.a -o program -g
+	$(MPICXX) distributedApplication.o TestPlugin.o RayPlatform/libRayPlatform.a -o distributedApplication -g
 
 clean:
-	rm *.o program -rf
+	rm *.o distributedApplication -rf
 	cd RayPlatform; make clean
 

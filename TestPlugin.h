@@ -1,16 +1,29 @@
 /** this example is in the public domain **/
 /** author: Sébastien Boisvert **/
 
-#ifndef _Test_h
-#define _Test_h
+#ifndef _TestPlugin_h
+#define _TestPlugin_h
 
-#include "Test_adapters.h"
 #include <core/ComputeCore.h>
 
+class TestPlugin;
+
+____CreateMasterModeAdapterDeclaration(TestPlugin,MY_TEST_MASTER_MODE_STEP_A);
+____CreateMasterModeAdapterDeclaration(TestPlugin,MY_TEST_MASTER_MODE_STEP_B);
+____CreateMasterModeAdapterDeclaration(TestPlugin,MY_TEST_MASTER_MODE_STEP_C);
+
+____CreateSlaveModeAdapterDeclaration(TestPlugin,MY_TEST_SLAVE_MODE_STEP_A);
+____CreateSlaveModeAdapterDeclaration(TestPlugin,MY_TEST_SLAVE_MODE_STEP_B);
+____CreateSlaveModeAdapterDeclaration(TestPlugin,MY_TEST_SLAVE_MODE_STEP_C);
+
+____CreateMessageTagAdapterDeclaration(TestPlugin,MY_TEST_MPI_TAG_STOP_AND_DIE);
+____CreateMessageTagAdapterDeclaration(TestPlugin,MY_TEST_MPI_TAG_TIME_BOMB);
+
+
 /**
- * The plugin Test
+ * The plugin TestPlugin
  * **/
-class Test:  public CorePlugin{
+class TestPlugin:  public CorePlugin{
 
 /**
  * A list of master modes
@@ -53,7 +66,7 @@ class Test:  public CorePlugin{
 	bool m_doneC;
 public:
 
-	Test();
+	TestPlugin();
 
 /** callbacks for master modes **/
 	void call_MY_TEST_MASTER_MODE_STEP_A();

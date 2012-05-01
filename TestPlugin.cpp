@@ -1,15 +1,28 @@
 /** this example is in the public domain **/
 /** author: Sébastien Boisvert **/
 
-#include "Test.h"
+#include "TestPlugin.h"
 
-Test::Test(){
+____CreateMasterModeAdapterImplementation(TestPlugin,MY_TEST_MASTER_MODE_STEP_A);
+____CreateMasterModeAdapterImplementation(TestPlugin,MY_TEST_MASTER_MODE_STEP_B);
+____CreateMasterModeAdapterImplementation(TestPlugin,MY_TEST_MASTER_MODE_STEP_C);
+
+____CreateSlaveModeAdapterImplementation(TestPlugin,MY_TEST_SLAVE_MODE_STEP_A);
+____CreateSlaveModeAdapterImplementation(TestPlugin,MY_TEST_SLAVE_MODE_STEP_B);
+____CreateSlaveModeAdapterImplementation(TestPlugin,MY_TEST_SLAVE_MODE_STEP_C);
+
+____CreateMessageTagAdapterImplementation(TestPlugin,MY_TEST_MPI_TAG_STOP_AND_DIE);
+____CreateMessageTagAdapterImplementation(TestPlugin,MY_TEST_MPI_TAG_TIME_BOMB);
+
+
+
+TestPlugin::TestPlugin(){
 	m_doneA=false;
 	m_doneB=false;
 	m_doneC=false;
 }
 
-void Test::call_MY_TEST_MASTER_MODE_STEP_A(){
+void TestPlugin::call_MY_TEST_MASTER_MODE_STEP_A(){
 	if(m_doneA==false){
 		m_doneA=true;
 		cout<<"Rank "<<m_core->getMessagesHandler()->getRank()<<" call_MY_TEST_MASTER_MODE_STEP_A"<<endl;
@@ -20,7 +33,7 @@ void Test::call_MY_TEST_MASTER_MODE_STEP_A(){
 	}
 }
 
-void Test::call_MY_TEST_MASTER_MODE_STEP_B(){
+void TestPlugin::call_MY_TEST_MASTER_MODE_STEP_B(){
 	if(m_doneB==false){
 		m_doneB=true;
 		cout<<"Rank "<<MASTER_RANK<<" call_MY_TEST_MASTER_MODE_STEP_B"<<endl;
@@ -30,7 +43,7 @@ void Test::call_MY_TEST_MASTER_MODE_STEP_B(){
 	}
 }
 
-void Test::call_MY_TEST_MASTER_MODE_STEP_C(){
+void TestPlugin::call_MY_TEST_MASTER_MODE_STEP_C(){
 	if(m_doneC==false){
 		m_doneC=true;
 		cout<<"Rank "<<MASTER_RANK<<" call_MY_TEST_MASTER_MODE_STEP_C"<<endl;
@@ -42,19 +55,19 @@ void Test::call_MY_TEST_MASTER_MODE_STEP_C(){
 	}
 }
 
-void Test::call_MY_TEST_SLAVE_MODE_STEP_A(){
+void TestPlugin::call_MY_TEST_SLAVE_MODE_STEP_A(){
 	cout<<"I am "<<m_core->getMessagesHandler()->getRank()<<" doing call_MY_TEST_SLAVE_MODE_STEP_A"<<endl;
 
 	m_core->getSwitchMan()->closeSlaveModeLocally(m_core->getOutbox(),m_core->getMessagesHandler()->getRank());
 }
 
-void Test::call_MY_TEST_SLAVE_MODE_STEP_B(){
+void TestPlugin::call_MY_TEST_SLAVE_MODE_STEP_B(){
 	cout<<"I am "<<m_core->getMessagesHandler()->getRank()<<" doing call_MY_TEST_SLAVE_MODE_STEP_B"<<endl;
 
 	m_core->getSwitchMan()->closeSlaveModeLocally(m_core->getOutbox(),m_core->getMessagesHandler()->getRank());
 }
 
-void Test::call_MY_TEST_SLAVE_MODE_STEP_C(){
+void TestPlugin::call_MY_TEST_SLAVE_MODE_STEP_C(){
 
 	cout<<"I am "<<m_core->getMessagesHandler()->getRank()<<" doing call_MY_TEST_SLAVE_MODE_STEP_C, now I die"<<endl;
 
@@ -79,7 +92,7 @@ void Test::call_MY_TEST_SLAVE_MODE_STEP_C(){
 	m_core->getSwitchMan()->setSlaveMode(RAY_SLAVE_MODE_DO_NOTHING);
 }
 
-void Test::call_MY_TEST_MPI_TAG_TIME_BOMB(Message*message){
+void TestPlugin::call_MY_TEST_MPI_TAG_TIME_BOMB(Message*message){
 	uint64_t*buffer=message->getBuffer();
 
 	if(buffer[0]==0){
@@ -106,20 +119,20 @@ void Test::call_MY_TEST_MPI_TAG_TIME_BOMB(Message*message){
 	}
 }
 
-void Test::call_MY_TEST_MPI_TAG_STOP_AND_DIE(Message*message){
+void TestPlugin::call_MY_TEST_MPI_TAG_STOP_AND_DIE(Message*message){
 
 	cout<<"rank "<<m_core->getMessagesHandler()->getRank()<<" received message MY_TEST_MPI_TAG_STOP_AND_DIE, this kills the batman"<<endl;
 
 	m_core->stop();
 }
 
-void Test::registerPlugin(ComputeCore*core){
+void TestPlugin::registerPlugin(ComputeCore*core){
 
 	/** register the m_plugin with the core **/
 
 	m_plugin=core->allocatePluginHandle();
 
-	core->setPluginName(m_plugin,"Test");
+	core->setPluginName(m_plugin,"TestPlugin");
 
 	// for each master mode, we allocate a handle 
 	// after that, we register a handler for it
@@ -201,7 +214,7 @@ void Test::registerPlugin(ComputeCore*core){
 	core->setObjectSymbol(m_plugin,object,"BooleanState");
 }
 
-void Test::resolveSymbols(ComputeCore*core){
+void TestPlugin::resolveSymbols(ComputeCore*core){
 
 	// here, we resolve symbols owned by other m_plugins
 	// but needed by the current m_plugin
