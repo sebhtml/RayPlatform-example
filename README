@@ -1,23 +1,24 @@
 
 This is an example program that utilises the Ray Platform.
-
 The RayPlatform main class is called ComputeCore.
-
 Plugins can be registered with the core.
 
 In this example, there is only one plugin called TestPlugin.
-
 In this example, a message containing an integer is passed. At each reception,
 the integer is decremented. When it reaches 0, the computation ends.
 
 == To test this example ==
 
-RayPlatform must contain RayPlatform stuff shipped with ray.
+RayPlatform is a symbolic link to ../RayPlatform
 
+You need to clone RayPlatform in the parent directory
 
+	git clone git://github.com/sebhtml/RayPlatform.git
+	git clone git://github.com/sebhtml/RayPlatform-example.git
+	cd RayPlatform-example
 
-make
+	make
 
-mpiexec -n 8 ./distributedApplication
+	mpiexec -n 8 ./distributedApplication | less
 
 
