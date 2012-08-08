@@ -3,18 +3,18 @@
 
 #include "TestPlugin.h"
 
-____CreateMasterModeAdapterImplementation(TestPlugin,MY_TEST_MASTER_MODE_STEP_A);
-____CreateMasterModeAdapterImplementation(TestPlugin,MY_TEST_MASTER_MODE_STEP_B);
-____CreateMasterModeAdapterImplementation(TestPlugin,MY_TEST_MASTER_MODE_STEP_C);
+__CreatePlugin(TestPlugin);
 
-____CreateSlaveModeAdapterImplementation(TestPlugin,MY_TEST_SLAVE_MODE_STEP_A);
-____CreateSlaveModeAdapterImplementation(TestPlugin,MY_TEST_SLAVE_MODE_STEP_B);
-____CreateSlaveModeAdapterImplementation(TestPlugin,MY_TEST_SLAVE_MODE_STEP_C);
+__CreateMasterModeAdapter(TestPlugin,MY_TEST_MASTER_MODE_STEP_A);
+__CreateMasterModeAdapter(TestPlugin,MY_TEST_MASTER_MODE_STEP_B);
+__CreateMasterModeAdapter(TestPlugin,MY_TEST_MASTER_MODE_STEP_C);
 
-____CreateMessageTagAdapterImplementation(TestPlugin,MY_TEST_MPI_TAG_STOP_AND_DIE);
-____CreateMessageTagAdapterImplementation(TestPlugin,MY_TEST_MPI_TAG_TIME_BOMB);
+__CreateSlaveModeAdapter(TestPlugin,MY_TEST_SLAVE_MODE_STEP_A);
+__CreateSlaveModeAdapter(TestPlugin,MY_TEST_SLAVE_MODE_STEP_B);
+__CreateSlaveModeAdapter(TestPlugin,MY_TEST_SLAVE_MODE_STEP_C);
 
-
+__CreateMessageTagAdapter(TestPlugin,MY_TEST_MPI_TAG_STOP_AND_DIE);
+__CreateMessageTagAdapter(TestPlugin,MY_TEST_MPI_TAG_TIME_BOMB);
 
 TestPlugin::TestPlugin(){
 	m_doneA=false;
@@ -142,36 +142,42 @@ void TestPlugin::registerPlugin(ComputeCore*core){
 	//  - the desired value for the requested master mode handle
 
 	MY_TEST_MASTER_MODE_STEP_A=core->allocateMasterModeHandle(m_plugin);
-	m_adapter_MY_TEST_MASTER_MODE_STEP_A.setObject(this);
-	core->setMasterModeObjectHandler(m_plugin,MY_TEST_MASTER_MODE_STEP_A,&m_adapter_MY_TEST_MASTER_MODE_STEP_A);
+	core->setMasterModeObjectHandler(m_plugin,MY_TEST_MASTER_MODE_STEP_A,
+		__GetAdapter(TestPlugin,MY_TEST_MASTER_MODE_STEP_A));
+
 	core->setMasterModeSymbol(m_plugin,MY_TEST_MASTER_MODE_STEP_A,"MY_TEST_MASTER_MODE_STEP_A");
 
 	MY_TEST_MASTER_MODE_STEP_B=core->allocateMasterModeHandle(m_plugin);
-	m_adapter_MY_TEST_MASTER_MODE_STEP_B.setObject(this);
-	core->setMasterModeObjectHandler(m_plugin,MY_TEST_MASTER_MODE_STEP_B,&m_adapter_MY_TEST_MASTER_MODE_STEP_B);
+	core->setMasterModeObjectHandler(m_plugin,MY_TEST_MASTER_MODE_STEP_B,
+		__GetAdapter(TestPlugin,MY_TEST_MASTER_MODE_STEP_B));
+
 	core->setMasterModeSymbol(m_plugin,MY_TEST_MASTER_MODE_STEP_B,"MY_TEST_MASTER_MODE_STEP_B");
 
 	MY_TEST_MASTER_MODE_STEP_C=core->allocateMasterModeHandle(m_plugin);
-	m_adapter_MY_TEST_MASTER_MODE_STEP_C.setObject(this);
-	core->setMasterModeObjectHandler(m_plugin,MY_TEST_MASTER_MODE_STEP_C,&m_adapter_MY_TEST_MASTER_MODE_STEP_C);
+	core->setMasterModeObjectHandler(m_plugin,MY_TEST_MASTER_MODE_STEP_C,
+		__GetAdapter(TestPlugin,MY_TEST_MASTER_MODE_STEP_C));
+
 	core->setMasterModeSymbol(m_plugin,MY_TEST_MASTER_MODE_STEP_C,"MY_TEST_MASTER_MODE_STEP_C");
 
 	// for each slave mode, we allocate a handle 
 	// after that, we register a handler for it
 
 	MY_TEST_SLAVE_MODE_STEP_A=core->allocateSlaveModeHandle(m_plugin);
-	m_adapter_MY_TEST_SLAVE_MODE_STEP_A.setObject(this);
-	core->setSlaveModeObjectHandler(m_plugin,MY_TEST_SLAVE_MODE_STEP_A,&m_adapter_MY_TEST_SLAVE_MODE_STEP_A);
+	core->setSlaveModeObjectHandler(m_plugin,MY_TEST_SLAVE_MODE_STEP_A,
+		__GetAdapter(TestPlugin,MY_TEST_SLAVE_MODE_STEP_A));
+
 	core->setSlaveModeSymbol(m_plugin,MY_TEST_SLAVE_MODE_STEP_A,"MY_TEST_SLAVE_MODE_STEP_A");
 
 	MY_TEST_SLAVE_MODE_STEP_B=core->allocateSlaveModeHandle(m_plugin);
-	m_adapter_MY_TEST_SLAVE_MODE_STEP_B.setObject(this);
-	core->setSlaveModeObjectHandler(m_plugin,MY_TEST_SLAVE_MODE_STEP_B,&m_adapter_MY_TEST_SLAVE_MODE_STEP_B);
+	core->setSlaveModeObjectHandler(m_plugin,MY_TEST_SLAVE_MODE_STEP_B,
+		__GetAdapter(TestPlugin,MY_TEST_SLAVE_MODE_STEP_B));
+
 	core->setSlaveModeSymbol(m_plugin,MY_TEST_SLAVE_MODE_STEP_B,"MY_TEST_SLAVE_MODE_STEP_B");
 
 	MY_TEST_SLAVE_MODE_STEP_C=core->allocateSlaveModeHandle(m_plugin);
-	m_adapter_MY_TEST_SLAVE_MODE_STEP_C.setObject(this);
-	core->setSlaveModeObjectHandler(m_plugin,MY_TEST_SLAVE_MODE_STEP_C,&m_adapter_MY_TEST_SLAVE_MODE_STEP_C);
+	core->setSlaveModeObjectHandler(m_plugin,MY_TEST_SLAVE_MODE_STEP_C,
+		__GetAdapter(TestPlugin,MY_TEST_SLAVE_MODE_STEP_C));
+
 	core->setSlaveModeSymbol(m_plugin,MY_TEST_SLAVE_MODE_STEP_C,"MY_TEST_SLAVE_MODE_STEP_C");
 
 	MY_TEST_MPI_TAG_START_STEP_A=core->allocateMessageTagHandle(m_plugin);
@@ -201,12 +207,12 @@ void TestPlugin::registerPlugin(ComputeCore*core){
 	// configure the two message tags
 
 	MY_TEST_MPI_TAG_TIME_BOMB=core->allocateMessageTagHandle(m_plugin);
-	m_adapter_MY_TEST_MPI_TAG_TIME_BOMB.setObject(this);
-	core->setMessageTagObjectHandler(m_plugin,MY_TEST_MPI_TAG_TIME_BOMB,&m_adapter_MY_TEST_MPI_TAG_TIME_BOMB);
+	core->setMessageTagObjectHandler(m_plugin,MY_TEST_MPI_TAG_TIME_BOMB,
+		__GetAdapter(TestPlugin,MY_TEST_MPI_TAG_TIME_BOMB));
 
 	MY_TEST_MPI_TAG_STOP_AND_DIE=core->allocateMessageTagHandle(m_plugin);
-	m_adapter_MY_TEST_MPI_TAG_STOP_AND_DIE.setObject(this);
-	core->setMessageTagObjectHandler(m_plugin,MY_TEST_MPI_TAG_STOP_AND_DIE,&m_adapter_MY_TEST_MPI_TAG_STOP_AND_DIE);
+	core->setMessageTagObjectHandler(m_plugin,MY_TEST_MPI_TAG_STOP_AND_DIE,
+		__GetAdapter(TestPlugin,MY_TEST_MPI_TAG_STOP_AND_DIE));
 
 	/* a plugin can share any of its object with other plugins **/
 	/** other plugins have to resolve the symbol. **/
@@ -227,6 +233,8 @@ void TestPlugin::resolveSymbols(ComputeCore*core){
 	RAY_SLAVE_MODE_DO_NOTHING=core->getSlaveModeFromSymbol(m_plugin,"RAY_SLAVE_MODE_DO_NOTHING");
 
 	bool*test=(bool*) core->getObjectFromSymbol(m_plugin,"BooleanState");
+
+	__BindPlugin(TestPlugin);
 }
 
 
