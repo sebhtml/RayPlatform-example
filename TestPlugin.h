@@ -6,10 +6,34 @@
 
 #include <core/ComputeCore.h>
 
+__DeclarePlugin(TestPlugin);
+
+__DeclareMasterModeAdapter(TestPlugin,MY_TEST_MASTER_MODE_STEP_A);
+__DeclareMasterModeAdapter(TestPlugin,MY_TEST_MASTER_MODE_STEP_B);
+__DeclareMasterModeAdapter(TestPlugin,MY_TEST_MASTER_MODE_STEP_C);
+
+__DeclareSlaveModeAdapter(TestPlugin,MY_TEST_SLAVE_MODE_STEP_A);
+__DeclareSlaveModeAdapter(TestPlugin,MY_TEST_SLAVE_MODE_STEP_B);
+__DeclareSlaveModeAdapter(TestPlugin,MY_TEST_SLAVE_MODE_STEP_C);
+
+__DeclareMessageTagAdapter(TestPlugin,MY_TEST_MPI_TAG_STOP_AND_DIE);
+__DeclareMessageTagAdapter(TestPlugin,MY_TEST_MPI_TAG_TIME_BOMB);
+
 /**
  * The plugin TestPlugin
  * **/
 class TestPlugin:  public CorePlugin{
+
+	__AddAdapter(TestPlugin,MY_TEST_MASTER_MODE_STEP_A);
+	__AddAdapter(TestPlugin,MY_TEST_MASTER_MODE_STEP_B);
+	__AddAdapter(TestPlugin,MY_TEST_MASTER_MODE_STEP_C);
+
+	__AddAdapter(TestPlugin,MY_TEST_SLAVE_MODE_STEP_A);
+	__AddAdapter(TestPlugin,MY_TEST_SLAVE_MODE_STEP_B);
+	__AddAdapter(TestPlugin,MY_TEST_SLAVE_MODE_STEP_C);
+
+	__AddAdapter(TestPlugin,MY_TEST_MPI_TAG_STOP_AND_DIE);
+	__AddAdapter(TestPlugin,MY_TEST_MPI_TAG_TIME_BOMB);
 
 /**
  * A list of master modes

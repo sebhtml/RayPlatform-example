@@ -25,9 +25,9 @@ TestPlugin::TestPlugin(){
 void TestPlugin::call_MY_TEST_MASTER_MODE_STEP_A(){
 	if(m_doneA==false){
 		m_doneA=true;
-		cout<<"Rank "<<m_core->getMessagesHandler()->getRank()<<" call_MY_TEST_MASTER_MODE_STEP_A"<<endl;
+		cout<<"Rank "<<m_core->getRank()<<" call_MY_TEST_MASTER_MODE_STEP_A"<<endl;
 
-		m_core->getSwitchMan()->openMasterMode(m_core->getOutbox(),m_core->getMessagesHandler()->getRank());
+		m_core->getSwitchMan()->openMasterMode(m_core->getOutbox(),m_core->getRank());
 	}else if(m_core->getSwitchMan()->allRanksAreReady()){
 		m_core->getSwitchMan()->closeMasterMode();
 	}
@@ -37,7 +37,7 @@ void TestPlugin::call_MY_TEST_MASTER_MODE_STEP_B(){
 	if(m_doneB==false){
 		m_doneB=true;
 		cout<<"Rank "<<MASTER_RANK<<" call_MY_TEST_MASTER_MODE_STEP_B"<<endl;
-		m_core->getSwitchMan()->openMasterMode(m_core->getOutbox(),m_core->getMessagesHandler()->getRank());
+		m_core->getSwitchMan()->openMasterMode(m_core->getOutbox(),m_core->getRank());
 	}else if(m_core->getSwitchMan()->allRanksAreReady()){
 		m_core->getSwitchMan()->closeMasterMode();
 	}
@@ -47,42 +47,39 @@ void TestPlugin::call_MY_TEST_MASTER_MODE_STEP_C(){
 	if(m_doneC==false){
 		m_doneC=true;
 		cout<<"Rank "<<MASTER_RANK<<" call_MY_TEST_MASTER_MODE_STEP_C"<<endl;
-		m_core->getSwitchMan()->openMasterMode(m_core->getOutbox(),m_core->getMessagesHandler()->getRank());
+		m_core->getSwitchMan()->openMasterMode(m_core->getOutbox(),m_core->getRank());
 	}else if(m_core->getSwitchMan()->allRanksAreReady()){
 		m_core->getSwitchMan()->closeMasterMode();
-
-		
 	}
 }
 
 void TestPlugin::call_MY_TEST_SLAVE_MODE_STEP_A(){
-	cout<<"I am "<<m_core->getMessagesHandler()->getRank()<<" doing call_MY_TEST_SLAVE_MODE_STEP_A"<<endl;
+	cout<<"I am "<<m_core->getRank()<<" doing call_MY_TEST_SLAVE_MODE_STEP_A"<<endl;
 
-	m_core->getSwitchMan()->closeSlaveModeLocally(m_core->getOutbox(),m_core->getMessagesHandler()->getRank());
+	m_core->getSwitchMan()->closeSlaveModeLocally(m_core->getOutbox(),m_core->getRank());
 }
 
 void TestPlugin::call_MY_TEST_SLAVE_MODE_STEP_B(){
-	cout<<"I am "<<m_core->getMessagesHandler()->getRank()<<" doing call_MY_TEST_SLAVE_MODE_STEP_B"<<endl;
+	cout<<"I am "<<m_core->getRank()<<" doing call_MY_TEST_SLAVE_MODE_STEP_B"<<endl;
 
-	m_core->getSwitchMan()->closeSlaveModeLocally(m_core->getOutbox(),m_core->getMessagesHandler()->getRank());
+	m_core->getSwitchMan()->closeSlaveModeLocally(m_core->getOutbox(),m_core->getRank());
 }
 
 void TestPlugin::call_MY_TEST_SLAVE_MODE_STEP_C(){
 
-	cout<<"I am "<<m_core->getMessagesHandler()->getRank()<<" doing call_MY_TEST_SLAVE_MODE_STEP_C, now I die"<<endl;
-
+	cout<<"I am "<<m_core->getRank()<<" doing call_MY_TEST_SLAVE_MODE_STEP_C, now I die"<<endl;
 	cout<<"This is over "<<endl;
 
-	if(m_core->getMessagesHandler()->getRank()==0){
+	if(m_core->getRank()==0){
 		uint64_t*buffer=(uint64_t*)m_core->getOutboxAllocator()->allocate(1*sizeof(uint64_t));
 		buffer[0]=100;
 
 		// compute the next destination
-		Rank destination=m_core->getMessagesHandler()->getRank()+1;
-		if(destination==m_core->getMessagesHandler()->getSize())
+		Rank destination=m_core->getRank()+1;
+		if(destination==m_core->getSize())
 			destination=0;
 
-		Message aMessage(buffer,1,destination,MY_TEST_MPI_TAG_TIME_BOMB,m_core->getMessagesHandler()->getRank());
+		Message aMessage(buffer,1,destination,MY_TEST_MPI_TAG_TIME_BOMB,m_core->getRank());
 
 		// send the bomb to another rank
 		m_core->getOutbox()->push_back(aMessage);
@@ -96,7 +93,7 @@ void TestPlugin::call_MY_TEST_MPI_TAG_TIME_BOMB(Message*message){
 	uint64_t*buffer=message->getBuffer();
 
 	if(buffer[0]==0){
-		cout<<"The bomb exploded on rank "<<m_core->getMessagesHandler()->getRank()<<" !"<<endl;
+		cout<<"The bomb exploded on rank "<<m_core->getRank()<<" !"<<endl;
 
 		// kill everyone
 
@@ -105,14 +102,14 @@ void TestPlugin::call_MY_TEST_MPI_TAG_TIME_BOMB(Message*message){
 		uint64_t*bufferOut=(uint64_t*)m_core->getOutboxAllocator()->allocate(1*sizeof(uint64_t));
 		bufferOut[0]=buffer[0]-1;
 
-		cout<<"Remaining time before the explosion is "<<bufferOut[0]<<" according to rank "<<m_core->getMessagesHandler()->getRank()<<endl;
+		cout<<"Remaining time before the explosion is "<<bufferOut[0]<<" according to rank "<<m_core->getRank()<<endl;
 
 		// compute the next destination
-		Rank destination=m_core->getMessagesHandler()->getRank()+1;
-		if(destination==m_core->getMessagesHandler()->getSize())
+		Rank destination=m_core->getRank()+1;
+		if(destination==m_core->getSize())
 			destination=0;
 
-		Message aMessage(bufferOut,1,destination,MY_TEST_MPI_TAG_TIME_BOMB,m_core->getMessagesHandler()->getRank());
+		Message aMessage(bufferOut,1,destination,MY_TEST_MPI_TAG_TIME_BOMB,m_core->getRank());
 
 		// send the bomb to another rank
 		m_core->getOutbox()->push_back(aMessage);
@@ -121,7 +118,7 @@ void TestPlugin::call_MY_TEST_MPI_TAG_TIME_BOMB(Message*message){
 
 void TestPlugin::call_MY_TEST_MPI_TAG_STOP_AND_DIE(Message*message){
 
-	cout<<"rank "<<m_core->getMessagesHandler()->getRank()<<" received message MY_TEST_MPI_TAG_STOP_AND_DIE, this kills the batman"<<endl;
+	cout<<"rank "<<m_core->getRank()<<" received message MY_TEST_MPI_TAG_STOP_AND_DIE, this kills the batman"<<endl;
 
 	m_core->stop();
 }
@@ -185,7 +182,6 @@ void TestPlugin::registerPlugin(ComputeCore*core){
 	MY_TEST_MPI_TAG_START_STEP_C=core->allocateMessageTagHandle(m_plugin);
 
 	// now, we register the order of the master modes
-	
 	core->setMasterModeNextMasterMode(m_plugin,MY_TEST_MASTER_MODE_STEP_A,MY_TEST_MASTER_MODE_STEP_B);
 	core->setMasterModeNextMasterMode(m_plugin,MY_TEST_MASTER_MODE_STEP_B,MY_TEST_MASTER_MODE_STEP_C);
 
@@ -205,7 +201,6 @@ void TestPlugin::registerPlugin(ComputeCore*core){
 	m_core=core;
 
 	// configure the two message tags
-
 	MY_TEST_MPI_TAG_TIME_BOMB=core->allocateMessageTagHandle(m_plugin);
 	core->setMessageTagObjectHandler(m_plugin,MY_TEST_MPI_TAG_TIME_BOMB,
 		__GetAdapter(TestPlugin,MY_TEST_MPI_TAG_TIME_BOMB));
@@ -235,6 +230,17 @@ void TestPlugin::resolveSymbols(ComputeCore*core){
 	bool*test=(bool*) core->getObjectFromSymbol(m_plugin,"BooleanState");
 
 	__BindPlugin(TestPlugin);
+
+	__BindAdapter(TestPlugin,MY_TEST_MASTER_MODE_STEP_A);
+	__BindAdapter(TestPlugin,MY_TEST_MASTER_MODE_STEP_B);
+	__BindAdapter(TestPlugin,MY_TEST_MASTER_MODE_STEP_C);
+
+	__BindAdapter(TestPlugin,MY_TEST_SLAVE_MODE_STEP_A);
+	__BindAdapter(TestPlugin,MY_TEST_SLAVE_MODE_STEP_B);
+	__BindAdapter(TestPlugin,MY_TEST_SLAVE_MODE_STEP_C);
+
+	__BindAdapter(TestPlugin,MY_TEST_MPI_TAG_STOP_AND_DIE);
+	__BindAdapter(TestPlugin,MY_TEST_MPI_TAG_TIME_BOMB);
 }
 
 
