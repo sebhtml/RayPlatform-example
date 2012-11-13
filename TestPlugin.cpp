@@ -82,7 +82,7 @@ void TestPlugin::call_MY_TEST_SLAVE_MODE_STEP_C(){
 		Message aMessage(buffer,1,destination,MY_TEST_MPI_TAG_TIME_BOMB,m_core->getRank());
 
 		// send the bomb to another rank
-		m_core->getOutbox()->push_back(aMessage);
+		m_core->getOutbox()->push_back(&aMessage);
 	}
 
 	// do nothing now
@@ -112,7 +112,7 @@ void TestPlugin::call_MY_TEST_MPI_TAG_TIME_BOMB(Message*message){
 		Message aMessage(bufferOut,1,destination,MY_TEST_MPI_TAG_TIME_BOMB,m_core->getRank());
 
 		// send the bomb to another rank
-		m_core->getOutbox()->push_back(aMessage);
+		m_core->getOutbox()->push_back(&aMessage);
 	}
 }
 
