@@ -134,9 +134,8 @@ void TestPlugin::registerPlugin(ComputeCore*core){
 	// for each master mode, we allocate a handle 
 	// after that, we register a handler for it
 	//
-	// allocateMasterModeHandle takes 2 arguments
+	// allocateMasterModeHandle takes 1 arguments
 	//  - the plugin handle
-	//  - the desired value for the requested master mode handle
 
 	MY_TEST_MASTER_MODE_STEP_A=core->allocateMasterModeHandle(m_plugin);
 	core->setMasterModeObjectHandler(m_plugin,MY_TEST_MASTER_MODE_STEP_A,
