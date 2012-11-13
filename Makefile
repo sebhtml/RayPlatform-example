@@ -1,5 +1,6 @@
 MPICXX=mpicxx
 J=1
+MAKE=make
 
 all:
 	# compile the application
@@ -8,7 +9,7 @@ all:
 	$(MPICXX) TestPlugin.cpp -c -o TestPlugin.o -I . -I RayPlatform -g
 
 	# compile the platform
-	cd RayPlatform; make -j $(J) CXXFLAGS=" -g "
+	cd RayPlatform; $(MAKE) $(MFLAGS)
 	
 	# link them
 	$(MPICXX) distributedApplication.o TestPlugin.o Application.o RayPlatform/libRayPlatform.a -o distributedApplication -g
