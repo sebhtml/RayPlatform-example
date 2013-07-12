@@ -4,7 +4,7 @@
 #ifndef _TestPlugin_h
 #define _TestPlugin_h
 
-#include <core/ComputeCore.h>
+#include <RayPlatform/core/ComputeCore.h>
 
 __DeclarePlugin(TestPlugin);
 

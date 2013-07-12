@@ -1,7 +1,7 @@
 /** this example is in the public domain **/
 /** author: Sébastien Boisvert **/
 
-#include "core/MiniRank.h"
+#include "RayPlatform/core/MiniRank.h"
 
 class Application: public MiniRank{
 public:

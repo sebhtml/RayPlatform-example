@@ -1,7 +1,7 @@
 /** this example is in the public domain **/
 /** author: Sébastien Boisvert **/
 
-#include <core/RankProcess.h>
+#include <RayPlatform/core/RankProcess.h>
 #include "Application.h"
 using namespace std;
 
